@@ -1,0 +1,83 @@
+package org.example.task_3;
+
+import java.io.*;
+import java.util.Scanner;
+
+public class FileEncryptor {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("==== File Encryption/Decryption ====");
+        System.out.print("Enter 'E' to Encrypt or 'D' to Decrypt: ");
+        String choice = scanner.nextLine().trim().toUpperCase();
+
+        System.out.print("Enter input file path: ");
+        String inputFile = scanner.nextLine();
+
+        System.out.print("Enter output file path: ");
+        String outputFile = scanner.nextLine();
+
+        int key = 5; // simple Caesar cipher shift value
+
+        try {
+            String content = readFile(inputFile);
+            String result;
+
+            if (choice.equals("E")) {
+                result = encrypt(content, key);
+                System.out.println("Encryption complete.");
+            } else if (choice.equals("D")) {
+                result = decrypt(content, key);
+                System.out.println("Decryption complete.");
+            } else {
+                System.out.println("Invalid choice!");
+                return;
+            }
+
+            writeFile(outputFile, result);
+            System.out.println("Result written to: " + outputFile);
+
+        } catch (IOException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+
+        scanner.close();
+    }
+
+    // Caesar cipher encryption
+    private static String encrypt(String text, int shift) {
+        StringBuilder result = new StringBuilder();
+        for (char ch : text.toCharArray()) {
+            result.append((char) (ch + shift));
+        }
+        return result.toString();
+    }
+
+    // Caesar cipher decryption
+    private static String decrypt(String text, int shift) {
+        StringBuilder result = new StringBuilder();
+        for (char ch : text.toCharArray()) {
+            result.append((char) (ch - shift));
+        }
+        return result.toString();
+    }
+
+    // Read file content
+    private static String readFile(String path) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        BufferedReader reader = new BufferedReader(new FileReader(path));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            sb.append(line).append("\n");
+        }
+        reader.close();
+        return sb.toString();
+    }
+
+    // Write result to file
+    private static void writeFile(String path, String content) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter(path));
+        writer.write(content);
+        writer.close();
+    }
+}
